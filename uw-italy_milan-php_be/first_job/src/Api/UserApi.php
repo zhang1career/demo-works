@@ -3,6 +3,9 @@
 namespace App\Api;
 
 use App\Model\Entity\User;
+use App\Util\GraphQL\Condition;
+use App\Util\GraphQL\GraphQL;
+use App\Util\GraphQL\Source;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class UserApi
@@ -12,24 +15,29 @@ class UserApi
     }
 
     public function findOneBy(int $userId) : ?User {
+
+        $fields = ['name'];
+
+        $source = new Source('user');
+
+        $condition = new Condition(
+            [
+                'id' => $userId
+            ]
+        );
+
+        $graphql = new GraphQL($fields, $source, $condition);
+
         $requestJson = json_encode(
             [
-                'query' => graphql_encode(
-                    [
-                        'user' => [
-                            'field' => 'id',
-                            'op' => 'eq',
-                            'value' => $userId,
-                        ]
-                    ]
-                )
+                'query' => $graphql
             ],
             JSON_THROW_ON_ERROR
         );
 
         $response = $this->httpClient->request(
             'POST',
-            'query',
+            'http://www.baidu.com/query',
             [
                 'headers' => [
                     'Content-Type: application/json',

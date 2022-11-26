@@ -18,7 +18,7 @@ services:
     ports:
       - 8080:80
       - 8443:443
-      - 8001:8001
+      - 8000:8000
 
   php-fpm:
     image: bitnami/php-fpm:8.0
@@ -37,23 +37,46 @@ services:
     ports:
       - 9000:9000
 
-  postgres:
-    image: postgres:14.6
-    container_name: postgres
+  mysql:
+    image: mysql/mysql-server:5.7
+    container_name: mysql
     environment:
-      POSTGRES_DB: app
-      POSTGRES_USER: zhangrj
-      POSTGRES_PASSWORD: 123123
+      TZ: Asia/Shanghai
+      MYSQL_ROOT_HOST: 172.50.0.1
+      MYSQL_ROOT_PASSWORD: 123123
+      MYSQL_USER: zhangrj
+      MYSQL_PASSWORD: 123123
+      MYSQL_DATABASE: app
     restart: unless-stopped
     volumes:
-      - ./var/postgres/var:/var/lib/postgresql/data:rw
-      - ./var/postgres/log:/var/log:rw
+      - ./docker/mysql/mysqld.conf:/etc/my.cnf:rw
+      - ./var/mysql/var:/var/lib/mysql:rw
+      - ./var/mysql/log:/var/log:rw
       - ./script/sql/ddl/20221119.sql:/docker-entrypoint-initdb.d/ddl.20221119.sql
+      - ./script/sql/dml/20221119.sql:/docker-entrypoint-initdb.d/dml.20221119.sql
     networks:
       backend_net:
-        ipv4_address: 172.50.0.102
+        ipv4_address: 172.50.0.101
     ports:
-      - 5432:5432
+      - 3306:3306
+
+#  postgres:
+#    image: postgres:14.6
+#    container_name: postgres
+#    environment:
+#      POSTGRES_DB: app
+#      POSTGRES_USER: zhangrj
+#      POSTGRES_PASSWORD: 123123
+#    restart: unless-stopped
+#    volumes:
+#      - ./var/postgres/var:/var/lib/postgresql/data:rw
+#      - ./var/postgres/log:/var/log:rw
+#      - ./script/sql/ddl/20221119.sql:/docker-entrypoint-initdb.d/ddl.20221119.sql
+#    networks:
+#      backend_net:
+#        ipv4_address: 172.50.0.102
+#    ports:
+#      - 5432:5432
 
   redis:
     image: redis:5.0.12

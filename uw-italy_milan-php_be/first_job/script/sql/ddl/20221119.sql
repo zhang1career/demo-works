@@ -1,14 +1,11 @@
-CREATE TABLE "user" (
-    "id" SERIAL NOT NULL,
-    "name" VARCHAR(200) NOT NULL DEFAULT '',
-    "created_time" TIMESTAMP NOT NULL,
-    "modified_time" TIMESTAMP NOT NULL,
-    "is_deleted" INTEGER NOT NULL DEFAULT '0',
-    PRIMARY KEY ("id")
-);
+CREATE DATABASE IF NOT EXISTS `app`;
+USE `app`;
 
-COMMENT ON COLUMN "user"."id" IS 'ID';
-COMMENT ON COLUMN "user"."name" IS '名字';
-COMMENT ON COLUMN "user"."created_time" IS '创建时间';
-COMMENT ON COLUMN "user"."modified_time" IS '修改时间';
-COMMENT ON COLUMN "user"."is_deleted" IS '是否已删除，0-否，id-是';
+CREATE TABLE `user` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `name` VARCHAR(200) NOT NULL DEFAULT '' COMMENT '名字' COLLATE 'utf8mb4_general_ci',
+    `created_tm` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00' COMMENT '创建时间',
+    `updated_tm` DATETIME NOT NULL DEFAULT '2000-01-01 00:00:00' COMMENT '修改时间',
+    `is_deleted` INT(11) NOT NULL DEFAULT '0' COMMENT '是否删除',
+    PRIMARY KEY (`id`) USING BTREE
+) COLLATE='utf8mb4_general_ci';

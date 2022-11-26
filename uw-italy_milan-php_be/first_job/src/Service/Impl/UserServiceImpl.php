@@ -32,14 +32,17 @@ class UserServiceImpl implements UserService
         // query db
         list($startTime, $stopTime) = $this->buildTimeRange($liveTime, $timeUnit);
         $cachedUser = $this->userRepo->findOneById($userId);
-        if ($cachedUser && $cachedUser->getModifiedTime() >= $startTime) {
+        if ($cachedUser && $cachedUser->getUpdatedTm() >= $startTime) {
             return $cachedUser;
         }
 
-        $_lock = $this->lock();
+        $resourceId = getmypid();
+        $_lock = $this->lock($resourceId);
         if (!$_lock) {
             return null;
         }
+
+        $savedUserId = null;
         $retry = 3;
         while ($retry--) {
             try {
@@ -68,17 +71,18 @@ class UserServiceImpl implements UserService
             $cachedUser = new User();
         }
         $cachedUser->setName($apiUser->getName());
-        $cachedUser->setModifiedTime(new DateTime());
+        $cachedUser->setUpdatedTm(new DateTime());
         $savedUserId = $this->userRepo->save($cachedUser);
         return $savedUserId;
     }
 
-    private function lock() : ?LockInterface {
-        $_lock = null;
+    private function lock($resourceId) : ?LockInterface {
+        $resourceId = 'app:' . 'l:' . $resourceId;
 
+        $_lock = null;
         $retry = 3;
         while ($retry--) {
-            $_lock = $this->lock->lock();
+            $_lock = $this->lock->lock($resourceId);
             if ($_lock) {
                 break;
             }

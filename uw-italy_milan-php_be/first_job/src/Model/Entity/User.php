@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="public.user")
+ * @ORM\Table(name="user")
  */
 class User extends AbsEntity
 {
@@ -25,12 +25,12 @@ class User extends AbsEntity
     /**
      * @ORM\Column(type="datetime")
      */
-    protected DateTime $createdTime;
+    protected DateTime $createdTm;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    protected DateTime $modifiedTime;
+    protected DateTime $updatedTm;
 
     /**
      * @ORM\Column(type="integer")
@@ -39,9 +39,11 @@ class User extends AbsEntity
 
 
     public function __construct() {
-        $this->createdTime = new DateTime();
-        $this->modifiedTime = $this->createdTime;
+        $this->createdTm = new DateTime();
+        $this->updatedTm = $this->createdTm;
         $this->isDeleted = 0;
+
+        Predis\Client();
     }
 
     /**
@@ -73,24 +75,24 @@ class User extends AbsEntity
     }
 
     /**
-     * @param DateTime $createdTime
+     * @param DateTime $createdTm
      */
-    public function setCreatedTime(DateTime $createdTime) : void {
-        $this->createdTime = $createdTime;
+    public function setCreatedTm(DateTime $createdTm) : void {
+        $this->createdTm = $createdTm;
     }
 
     /**
      * @return DateTime
      */
-    public function getCreatedTime() : DateTime {
-        return $this->createdTime;
+    public function getCreatedTm() : DateTime {
+        return $this->createdTm;
     }
 
     /**
-     * @param DateTime $modifiedTime
+     * @param DateTime $updatedTm
      */
-    public function setModifiedTime(DateTime $modifiedTime) : void {
-        $this->modifiedTime = $modifiedTime;
+    public function setUpdatedTm(DateTime $updatedTm) : void {
+        $this->updatedTm = $updatedTm;
     }
 
     /**
@@ -110,7 +112,7 @@ class User extends AbsEntity
     /**
      * @return DateTime
      */
-    public function getModifiedTime() : DateTime{
-        return $this->modifiedTime;
+    public function getUpdatedTm() : DateTime{
+        return $this->updatedTm;
     }
 }

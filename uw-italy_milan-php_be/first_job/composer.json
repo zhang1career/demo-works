@@ -22,7 +22,8 @@
         "symfony/proxy-manager-bridge": "5.4.*",
         "symfony/runtime": "5.4.*",
         "symfony/yaml": "5.4.*",
-        "webonyx/graphql-php": "^14.11"
+        "webonyx/graphql-php": "^14.11",
+      "ext-http": "*"
     },
     "require-dev": {
         "symfony/maker-bundle": "v1.48.*"
